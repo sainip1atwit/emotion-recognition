@@ -1,21 +1,41 @@
 import cv2 as cv
-import numpy as np
-import matplotlib
 
-### Read Image in black and white
-###
-### Arg: filepath to the image being turned into black and white
+# FILEPATH FOR IMAGE TESTING
+FILEPATH = "test_material/Lebron_James.jpg"
 
-def read_image_bw(filepath):
-    
-    # Turn image to black and white and show the image
-    img = cv.imread(filepath, cv.IMREAD_GRAYSCALE)
-    cv.imshow("Image Black n White", img)
+def detect_faces(file):
 
-    # Wait for user to close out image tab
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    # Preloaded face and eye cascades
+    fc = cv.CascadeClassifier("xml_files\\haarcascade_frontalface_default.xml")
+    ec = cv.CascadeClassifier("xml_files\\haarcascade_eye.xml")
 
-# Local image and function call
-filepath = "C:\\Users\\sprab\\Downloads\\Lebron_James.jpg"
-read_image_bw(filepath)
+    # read image (and in grayscale)
+    img = cv.imread(file)
+    img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+
+    # detect the faces using face cascade
+    faces = fc.detectMultiScale(img_gray, 1.3, 5)
+
+    # Outline all faces detected
+    for(x, y, w, h) in faces:
+
+        # create a rectangle outline for face
+        cv.rectangle(img, (x,y), (x+w, y+h), (255,255,0), 2)
+        
+        # grayscale and color matrices
+        roi_gray = img_gray[y:y+h, x:x+w]
+        roi_color = img[y:y+h, x:x+w]
+
+        # Use grayscale to detect eyes
+        eyes = ec.detectMultiScale(roi_gray)
+
+        #draW rectangles for the eyes
+        for (ex, ey, ew, eh) in eyes:
+            cv.rectangle(roi_color, (ex,ey), (ex+ew, ey+eh), (0,127,255), 2)
+
+        # display image and wait for user to escape
+        cv.imshow("Face Detection", img)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+
+detect_faces(FILEPATH)
