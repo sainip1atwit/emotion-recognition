@@ -1,10 +1,6 @@
-# emotion-recognition
+# Face Detection
 
-## Step 1
-Add photo
+Simple machine learning project that detects a face in an image
 
-## Step 2
-Try to get outline of a face
-
-## Step 3
-TBD
+## Libraries Used
+OpenCV
